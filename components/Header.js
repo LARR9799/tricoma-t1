@@ -47,7 +47,7 @@ const Header = () => {
           />
       </div>
       <div className={style.headerItems}>
-        <Link href='/collections/0x6B075520c6f2daB49681e00C2B7c4376388adbE3'>
+        <Link href='/NFTCollections'>
             <div className={style.headerItem}>Collections</div>
         </Link>
         <div className={style.headerItem}>Listings</div>

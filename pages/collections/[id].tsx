@@ -2,8 +2,15 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import Header from '../../components/Header'
 import { useAddress, useDisconnect, useMetamask } from "@thirdweb-dev/react";
+import { GetServerSideProps } from 'next';
+import { sanityClient, urlFor } from '../../sanity';
+import { Collection } from '../../typings';
 
-function NFTProducts() {
+interface Props {
+  collection: Collection
+}
+
+function NFTProducts({ collection }: Props) {
   //Auth
   const connectWithMetamask = useMetamask()
   const address = useAddress()
@@ -20,15 +27,14 @@ function NFTProducts() {
             <div className='bg-gradient-to-br from-yellow-400 to-purple-400 p-2 rounded-xl'>
               <img 
               className='w-44 rounded-xl lg:h-96 lg:w-72' 
-              /* src={urlFor(collection.previewImage).url()} */
-              src="https://links.papareact.com/8sg"
+              src={urlFor(collection.previewImage).url()}
               alt="" 
             />
             </div>
             <div className='space-y-2 p-5 text-center'>
-              <h1 className='text-4xl font-bold text-white'>HELLO{/* {collection.nftCollectionName} */}</h1>
+              <h1 className='text-4xl font-bold text-white'>{collection.nftCollectionName}</h1>
               <h2 className='text-xl text-gray-300'>
-                Hello again{/* {collection.description} */}
+                {collection.description}
               </h2>
             </div>
           </div>
@@ -66,18 +72,15 @@ function NFTProducts() {
         <div className='mt-10 flex flex-1 flex-col items-center space-y-6 text-center lg:space-y-0 lg:justify-center'>
           <img 
             className='w-80 object-cover pb-10 lg:h-40' 
-            src="http://links.papareact.com/bdy"/* {urlFor(collection.mainImage).url()} */
+            src={urlFor(collection.mainImage).url()}
             alt="" 
           />
 
           <h1 className='text-3xl font-bold lg:text-5xl lg:font-extrabold'>
-            CANNABIS{/* {collection.title} */}
+            {collection.title}
           </h1>
 
-          
-            <img className='h-80 w-80 object-contain' src="https://cdn.hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif" alt="" />
-         
-          
+          <img className='h-80 w-80 object-contain' src="https://cdn.hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif" alt="" />   
         </div>
         </div>
       </div>
@@ -86,3 +89,46 @@ function NFTProducts() {
 }
 
 export default NFTProducts
+
+export const getServerSideProps: GetServerSideProps = async ({params}) => {
+  const query = `*[_type == "collection" && slug.current == $id][0]{
+    _id,
+    title,
+    address,
+    description,
+    nftCollectionName,
+    mainImage {
+      asset
+    },
+    previewImage {
+      asset
+    },
+    slug {
+      current
+    },
+    creator-> {
+      _id,
+      name,
+      address,
+      slug {
+        current
+      },
+    },
+  }`
+
+  const collection = await sanityClient.fetch(query, {
+    id: params?.id
+  })
+
+  if (!collection) {
+    return {
+      notFound: true
+    }
+  }
+
+  return {
+    props: {
+      collection,
+    }
+  }
+}
