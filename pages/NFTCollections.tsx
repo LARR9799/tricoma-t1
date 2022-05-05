@@ -16,7 +16,7 @@ const NFTCollections = ({ collections }: Props) => {
       <Header />
       <div className="mx-auto max-w-7xl flex-col py-20 px-10 2xl:px-0">
        <main className='bg-slate-100 p-10 shadow-xl shadow-rose-400/20'>
-         <div className='gri space-x-3 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4'>
+         <div className='grid space-x-3 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5'>
            {collections.map(collection => (
              <Link href={`/collections/${collection.slug.current}`}>
               <div className='flex cursor-pointer flex-col items-center transition-all duration-200 hover:scale-105'>

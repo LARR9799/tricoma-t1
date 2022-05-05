@@ -50,7 +50,7 @@ const Header = () => {
         <Link href='/NFTCollections'>
             <div className={style.headerItem}>Collections</div>
         </Link>
-        <div className={style.headerItem}>Listings</div>
+        {/* <div className={style.headerItem}>Listings</div> */}
         <div className={style.headerItem}>Minted</div>
         
         {address ? (
